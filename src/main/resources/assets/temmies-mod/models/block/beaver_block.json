@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "temmies-mod:block/beaver_block"
+  }
+}
