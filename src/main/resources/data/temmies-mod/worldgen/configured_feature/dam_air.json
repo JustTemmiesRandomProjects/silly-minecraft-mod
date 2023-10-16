@@ -1,0 +1,7 @@
+{
+  "type": "temmies-mod:dam",
+  "config": {
+    "number": 10,
+    "lidBlockID": "minecraft:air"
+  }
+}

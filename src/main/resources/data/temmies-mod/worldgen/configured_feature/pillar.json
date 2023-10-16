@@ -1,0 +1,6 @@
+{
+  "type": "temmies-mod:example_feature",
+  "config": {
+    "number": 10
+  }
+}
