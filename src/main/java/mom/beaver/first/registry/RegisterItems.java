@@ -1,6 +1,7 @@
 package mom.beaver.first.registry;
 
 import mom.beaver.first.TemmiesMod;
+import mom.beaver.first.items.BeaverFuelItem;
 import mom.beaver.first.items.BeaverSoundsItem;
 import mom.beaver.first.items.blocks.BeaverBlock;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -16,7 +17,7 @@ import net.minecraft.util.Identifier;
 
 public class RegisterItems {
 
-    private static final Item BEAVER_FUEL = new Item(new FabricItemSettings());
+    private static final Item BEAVER_FUEL = new BeaverFuelItem(new FabricItemSettings());
     private static final BeaverSoundsItem BEAVER_SOUNDS = new BeaverSoundsItem(new FabricItemSettings().maxCount(1));
 
 //    private static final Block BEAVER_BLOCK = new Block(FabricBlockSettings.create().strength(1.5f));
@@ -32,8 +33,8 @@ public class RegisterItems {
                 registerItem("beaver_fuel", BEAVER_FUEL),
         };
 
-        // register fuel2
-        FuelRegistry.INSTANCE.add(BEAVER_FUEL, 7);
+        // register fuel
+        FuelRegistry.INSTANCE.add(BEAVER_FUEL, 1);
 
         // item group
         Registry.register(Registries.ITEM_GROUP, new Identifier(TemmiesMod.MOD_ID, "beaver_group"),

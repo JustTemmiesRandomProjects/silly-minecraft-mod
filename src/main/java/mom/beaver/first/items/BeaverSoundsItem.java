@@ -3,10 +3,12 @@ package mom.beaver.first.items;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import mom.beaver.first.helpers.soundHelper;
 
@@ -28,7 +30,7 @@ public class BeaverSoundsItem extends Item {
             SoundEvents.BLOCK_WOOD_BREAK
         });
 
-        playerEntity.playSound(sound, 1.2F, pitch);
+        world.playSound(null, BlockPos.ofFloored(playerEntity.getPos()), sound, SoundCategory.PLAYERS, 1.2F, pitch);
         return TypedActionResult.success(playerEntity.getStackInHand(hand));
     }
 }
