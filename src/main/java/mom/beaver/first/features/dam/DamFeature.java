@@ -61,16 +61,23 @@ public class DamFeature extends Feature<DamFeatureConfig> {
                 Blocks.KELP
         };
 
-        double y = 62;
+        double y = 90;
+        boolean foundWater = false;
+
         while (y > -64) {
             if (Arrays.stream(replacementBlocks).toList().contains(world.getBlockState(tempPos).getBlock())) {
                 world.setBlockState(
                         tempPos,
                         blocks[(int) Math.floor(Math.random() * blocks.length)],
                         0);
-            } else {
-                return !(y > 61);
+
+                foundWater = true;
+            } else if (foundWater) {
+                return true;
+            } else if (y < 60) {
+                return false;
             }
+
             tempPos = tempPos.down();
             y = y - 1;
         }
