@@ -2,6 +2,7 @@ package mom.beaver.first.features.dam;
 
 import com.mojang.serialization.Codec;
 import mom.beaver.first.TemmiesMod;
+import mom.beaver.first.items.blocks.BeaverBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,6 +23,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 public class DamFeature extends Feature<DamFeatureConfig> {
@@ -34,7 +36,7 @@ public class DamFeature extends Feature<DamFeatureConfig> {
     public boolean generate(FeatureContext<DamFeatureConfig> context) {
         StructureWorldAccess world = context.getWorld();
 
-        BlockPos origin = context.getOrigin().withY(62);
+        BlockPos origin = context.getOrigin();
 
         Random random = context.getRandom();
 
@@ -49,8 +51,6 @@ public class DamFeature extends Feature<DamFeatureConfig> {
             lidBlock = Blocks.AIR;
         }
 
-        BlockState[] blocks = getDamBlocksInBiome();
-
         Block[] replacementBlocks = {
                 Blocks.WATER,
                 Blocks.SEAGRASS,
@@ -61,6 +61,8 @@ public class DamFeature extends Feature<DamFeatureConfig> {
         int y = 90;
         int topBlock = -255;
 
+        BlockState[] blocks = getDamBlocksInBiome(0);
+
         BlockPos tempPos = new BlockPos(origin.withY(y));
         BlockState tempBlockState = world.getBlockState(tempPos);
 
@@ -69,21 +71,23 @@ public class DamFeature extends Feature<DamFeatureConfig> {
                 if (topBlock == -255) {
                     topBlock = y;
                 }
+
+                blocks = getDamBlocksInBiome(topBlock - y);
                 world.setBlockState(
                         tempPos,
                         blocks[(int) Math.floor(Math.random() * blocks.length)],
                         0);
 
             } else if (topBlock != -255) {
-
                 // place a block on top of the dam
-                TemmiesMod.LOGGER.info("hi");
                 if (Math.random() > 0.15) {
-                    TemmiesMod.LOGGER.info("place a top block");
-                    world.setBlockState(tempPos.withY((int)topBlock + 1), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
+                    blocks = getDamBlocksInBiome(-1);
+                    world.setBlockState(tempPos.withY(topBlock + 1), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
+
                     // place another one on top of that one
                     if (Math.random() > 0.75) {
-                            world.setBlockState(tempPos.withY((int)topBlock + 2), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
+                        blocks = getDamBlocksInBiome(-2);
+                        world.setBlockState(tempPos.withY(topBlock + 2), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
                     }
                 }
                 return true;
@@ -95,38 +99,42 @@ public class DamFeature extends Feature<DamFeatureConfig> {
             tempPos = tempPos.withY(y);
         }
         return false;
-
-//        for (int y = 62; y < 2; y = y - 1) {
-//            if (world.getBlockState(tempPos).isIn(BlockTags.DIRT)) {
-//                if (world.getBlockState(tempPos.up()).isOf(lidBlock)) {
-//                    for (int i = 0; i < number; i ++) {
-//                        if (world.getBlockState(tempPos).isOf(lidBlock)) {
-//
-//
-//                            tempPos = tempPos.up();
-//                        }
-//
-//                        if (tempPos.getY() >= world.getTopY()) break;
-//                    }
-//                }
-//            }
-//        }
     }
-    private static BlockState[] getDamBlocksInBiome() {
-        return new BlockState[] {
-                Blocks.MUD.getDefaultState(),
-                Blocks.MUD.getDefaultState(),
 
-                Blocks.OAK_FENCE.getDefaultState(),
-                Blocks.OAK_PLANKS.getDefaultState(),
+    private static BlockState[] getDamBlocksInBiome(int blocksBelowWater) {
+        boolean waterLogg = blocksBelowWater>=0;
 
+        BlockState mud = Blocks.MUD.getDefaultState();
+
+        BlockState oak_planks = Blocks.OAK_PLANKS.getDefaultState();
+        BlockState oak_trapdoor = Blocks.OAK_TRAPDOOR.getDefaultState();
+        BlockState oak_fence = Blocks.OAK_FENCE.getDefaultState().with(Properties.WATERLOGGED, waterLogg);
+
+        BlockState oak_wood = new BlockState[] {
                 Blocks.OAK_WOOD.getDefaultState().with(Properties.AXIS, Direction.Axis.Y),
-                Blocks.OAK_WOOD.getDefaultState().with(Properties.AXIS, Direction.Axis.X),
+                Blocks.OAK_WOOD.getDefaultState().with(Properties.AXIS, Direction.Axis.X)
+        }[new java.util.Random().nextInt(2)];
+        BlockState oak_log = new BlockState[] {
+                Blocks.OAK_LOG.getDefaultState().with(Properties.AXIS, Direction.Axis.Y),
+                Blocks.OAK_LOG.getDefaultState().with(Properties.AXIS, Direction.Axis.X)
+        }[new java.util.Random().nextInt(2)];
+        BlockState stripped_oak_wood = new BlockState[] {
                 Blocks.STRIPPED_OAK_WOOD.getDefaultState().with(Properties.AXIS, Direction.Axis.Y),
-                Blocks.STRIPPED_OAK_WOOD.getDefaultState().with(Properties.AXIS, Direction.Axis.X),
+                Blocks.STRIPPED_OAK_WOOD.getDefaultState().with(Properties.AXIS, Direction.Axis.X)
+        }[new java.util.Random().nextInt(2)];
 
-                Blocks.OAK_LEAVES.getDefaultState().with(Properties.WATERLOGGED, true).with(Properties.PERSISTENT, true),
-                Blocks.OAK_LEAVES.getDefaultState().with(Properties.WATERLOGGED, true).with(Properties.PERSISTENT, true)
+        BlockState oak_leaves = Blocks.OAK_LEAVES.getDefaultState().with(Properties.WATERLOGGED, waterLogg).with(Properties.PERSISTENT, true);
+
+
+        return switch (blocksBelowWater) {
+            case -2 -> new BlockState[] {oak_fence, oak_fence, oak_fence, oak_fence, oak_fence, oak_leaves, oak_trapdoor, oak_trapdoor};
+            case -1 -> new BlockState[] {oak_fence, oak_fence, oak_leaves, oak_leaves, oak_leaves, oak_leaves, oak_wood, oak_log, oak_planks};
+            case 0 -> new BlockState[] {oak_fence, stripped_oak_wood, oak_wood, oak_wood, oak_wood, oak_wood, oak_wood, oak_log, oak_log, oak_leaves, oak_leaves, oak_planks, oak_planks};
+            case 1 -> new BlockState[] {oak_fence, stripped_oak_wood, oak_wood, oak_wood, oak_wood, oak_wood, oak_log, oak_leaves, mud, oak_planks};
+            case 2 -> new BlockState[] {stripped_oak_wood, oak_wood, oak_wood, oak_wood, oak_log, mud};
+            case 3 -> new BlockState[] {stripped_oak_wood, oak_wood, oak_wood, oak_log, mud, mud};
+            case 4 -> new BlockState[] {oak_wood, oak_wood, oak_log, oak_log, mud, mud};
+            default -> new BlockState[] {oak_wood, oak_wood, oak_log, mud, mud};
         };
     }
 }
