@@ -49,9 +49,6 @@ public class DamFeature extends Feature<DamFeatureConfig> {
             lidBlock = Blocks.AIR;
         }
 
-        BlockPos tempPos = new BlockPos(origin);
-        BlockState tempBlockState = world.getBlockState(tempPos);
-
         BlockState[] blocks = getDamBlocksInBiome();
 
         Block[] replacementBlocks = {
@@ -61,25 +58,41 @@ public class DamFeature extends Feature<DamFeatureConfig> {
                 Blocks.KELP
         };
 
-        double y = 90;
-        boolean foundWater = false;
+        int y = 90;
+        int topBlock = -255;
+
+        BlockPos tempPos = new BlockPos(origin.withY(y));
+        BlockState tempBlockState = world.getBlockState(tempPos);
 
         while (y > -64) {
             if (Arrays.stream(replacementBlocks).toList().contains(world.getBlockState(tempPos).getBlock())) {
+                if (topBlock == -255) {
+                    topBlock = y;
+                }
                 world.setBlockState(
                         tempPos,
                         blocks[(int) Math.floor(Math.random() * blocks.length)],
                         0);
 
-                foundWater = true;
-            } else if (foundWater) {
+            } else if (topBlock != -255) {
+
+                // place a block on top of the dam
+                TemmiesMod.LOGGER.info("hi");
+                if (Math.random() > 0.15) {
+                    TemmiesMod.LOGGER.info("place a top block");
+                    world.setBlockState(tempPos.withY((int)topBlock + 1), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
+                    // place another one on top of that one
+                    if (Math.random() > 0.75) {
+                            world.setBlockState(tempPos.withY((int)topBlock + 2), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
+                    }
+                }
                 return true;
             } else if (y < 60) {
                 return false;
             }
 
-            tempPos = tempPos.down();
             y = y - 1;
+            tempPos = tempPos.withY(y);
         }
         return false;
 
