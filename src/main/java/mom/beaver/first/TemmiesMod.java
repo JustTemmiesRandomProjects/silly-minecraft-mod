@@ -35,7 +35,7 @@ public class TemmiesMod implements ModInitializer {
 	public static final Identifier DAM_FEATURE_ID = new Identifier("temmies-mod", "dam");
 	public static Feature<DamFeatureConfig> DAM_FEATURE = new DamFeature(DamFeatureConfig.CODEC);
 
-//	public static final RegistryKey<PlacedFeature> CUSTOM_DAM_PLACED_KEY = RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier("temmies-mod", "big_pillar"));
+	public static final RegistryKey<PlacedFeature> CUSTOM_DAM_PLACED_KEY = RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier("temmies-mod", "dam"));
 
 
 	@Override
@@ -50,6 +50,6 @@ public class TemmiesMod implements ModInitializer {
 
 		Registry.register(Registries.FEATURE, EXAMPLE_FEATURE_ID, EXAMPLE_FEATURE);
 		Registry.register(Registries.FEATURE, DAM_FEATURE_ID, DAM_FEATURE);
-//		BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.LOCAL_MODIFICATIONS, CUSTOM_DAM_PLACED_KEY);
+		BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.LOCAL_MODIFICATIONS, CUSTOM_DAM_PLACED_KEY);
 	}
 }

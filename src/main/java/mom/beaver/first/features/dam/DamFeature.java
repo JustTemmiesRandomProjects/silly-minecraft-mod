@@ -2,28 +2,19 @@ package mom.beaver.first.features.dam;
 
 import com.mojang.serialization.Codec;
 import mom.beaver.first.TemmiesMod;
-import mom.beaver.first.items.blocks.BeaverBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagEntry;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public class DamFeature extends Feature<DamFeatureConfig> {
@@ -35,6 +26,10 @@ public class DamFeature extends Feature<DamFeatureConfig> {
     @Override
     public boolean generate(FeatureContext<DamFeatureConfig> context) {
         StructureWorldAccess world = context.getWorld();
+
+        if (!world.getBiome(context.getOrigin()).isIn(BiomeTags.IS_RIVER)) {
+            return false;
+        }
 
         BlockPos origin = context.getOrigin();
 
@@ -51,6 +46,11 @@ public class DamFeature extends Feature<DamFeatureConfig> {
             lidBlock = Blocks.AIR;
         }
 
+        placeDamTile(lidBlock, origin, world);
+        return true;
+    };
+
+    private static boolean placeDamTile(Block lidBlock, BlockPos origin, StructureWorldAccess world) {
         Block[] replacementBlocks = {
                 Blocks.WATER,
                 Blocks.SEAGRASS,
@@ -60,11 +60,10 @@ public class DamFeature extends Feature<DamFeatureConfig> {
 
         int y = 90;
         int topBlock = -255;
-
-        BlockState[] blocks = getDamBlocksInBiome(0);
-
         BlockPos tempPos = new BlockPos(origin.withY(y));
         BlockState tempBlockState = world.getBlockState(tempPos);
+
+        BlockState[] blocks = getDamBlocksInBiomeAndLocation(0);
 
         while (y > -64) {
             if (Arrays.stream(replacementBlocks).toList().contains(world.getBlockState(tempPos).getBlock())) {
@@ -72,7 +71,7 @@ public class DamFeature extends Feature<DamFeatureConfig> {
                     topBlock = y;
                 }
 
-                blocks = getDamBlocksInBiome(topBlock - y);
+                blocks = getDamBlocksInBiomeAndLocation(topBlock - y);
                 world.setBlockState(
                         tempPos,
                         blocks[(int) Math.floor(Math.random() * blocks.length)],
@@ -80,13 +79,13 @@ public class DamFeature extends Feature<DamFeatureConfig> {
 
             } else if (topBlock != -255) {
                 // place a block on top of the dam
-                if (Math.random() > 0.15) {
-                    blocks = getDamBlocksInBiome(-1);
+                if (Math.random() > (0.25 - (topBlock - y) * 0.015)) {
+                    blocks = getDamBlocksInBiomeAndLocation(-1);
                     world.setBlockState(tempPos.withY(topBlock + 1), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
 
                     // place another one on top of that one
-                    if (Math.random() > 0.75) {
-                        blocks = getDamBlocksInBiome(-2);
+                    if (Math.random() > 1.0 - (topBlock - y) * 0.05) {
+                        blocks = getDamBlocksInBiomeAndLocation(-2);
                         world.setBlockState(tempPos.withY(topBlock + 2), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
                     }
                 }
@@ -99,9 +98,9 @@ public class DamFeature extends Feature<DamFeatureConfig> {
             tempPos = tempPos.withY(y);
         }
         return false;
-    }
+    };
 
-    private static BlockState[] getDamBlocksInBiome(int blocksBelowWater) {
+     private static BlockState[] getDamBlocksInBiomeAndLocation(int blocksBelowWater) {
         boolean waterLogg = blocksBelowWater>=0;
 
         BlockState mud = Blocks.MUD.getDefaultState();
@@ -124,7 +123,6 @@ public class DamFeature extends Feature<DamFeatureConfig> {
         }[new java.util.Random().nextInt(2)];
 
         BlockState oak_leaves = Blocks.OAK_LEAVES.getDefaultState().with(Properties.WATERLOGGED, waterLogg).with(Properties.PERSISTENT, true);
-
 
         return switch (blocksBelowWater) {
             case -2 -> new BlockState[] {oak_fence, oak_fence, oak_fence, oak_fence, oak_fence, oak_leaves, oak_trapdoor, oak_trapdoor};
