@@ -6,7 +6,43 @@
       "weight": 4,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_acacia",
+        "location": "temmies-mod:market/stands/acacia",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:market/stands/bamboo",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:market/stands/birch",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:market/stands/cherry",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:market/stands/darkoak",
         "projection": "rigid",
         "processors": "minecraft:empty"
       }
@@ -15,7 +51,25 @@
       "weight": 3,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_bamboo",
+        "location": "temmies-mod:market/stands/jungle",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:market/stands/mangrove",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 7,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:market/stands/oak",
         "projection": "rigid",
         "processors": "minecraft:empty"
       }
@@ -24,63 +78,15 @@
       "weight": 4,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_birch",
+        "location": "temmies-mod:market/stands/spruce",
         "projection": "rigid",
         "processors": "minecraft:empty"
       }
     },
     {
-      "weight": 4,
-      "element": {
-        "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_cherry",
-        "projection": "rigid",
-        "processors": "minecraft:empty"
-      }
-    },
-    {
-      "weight": 4,
-      "element": {
-        "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_darkoak",
-        "projection": "rigid",
-        "processors": "minecraft:empty"
-      }
-    },
-    {
-      "weight": 4,
-      "element": {
-        "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_jungle",
-        "projection": "rigid",
-        "processors": "minecraft:empty"
-      }
-    },
-    {
-      "weight": 4,
-      "element": {
-        "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_mangrove",
-        "projection": "rigid",
-        "processors": "minecraft:empty"
-      }
-    },
-    {
-      "weight": 6,
-      "element": {
-        "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_oak",
-        "projection": "rigid",
-        "processors": "minecraft:empty"
-      }
-    },
-    {
-      "weight": 4,
-      "element": {
-        "element_type": "minecraft:single_pool_element",
-        "location": "temmies-mod:market_stand_spruce",
-        "projection": "rigid",
-        "processors": "minecraft:empty"
+      "weight": 17,
+      "element":{
+        "element_type": "minecraft:empty_pool_element"
       }
     }
   ]
