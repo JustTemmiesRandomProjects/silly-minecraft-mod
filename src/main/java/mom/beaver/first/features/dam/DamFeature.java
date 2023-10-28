@@ -11,8 +11,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
+import net.fabricmc.api.ModInitializer;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.block.Blocks;
 
 import java.util.*;
 
@@ -46,11 +52,6 @@ public class DamFeature extends Feature<DamFeatureConfig> {
             lidBlock = Blocks.AIR;
         }
 
-        placeDamTile(lidBlock, origin, world);
-        return true;
-    };
-
-    private static boolean placeDamTile(Block lidBlock, BlockPos origin, StructureWorldAccess world) {
         Block[] replacementBlocks = {
                 Blocks.WATER,
                 Blocks.SEAGRASS,
@@ -60,41 +61,109 @@ public class DamFeature extends Feature<DamFeatureConfig> {
 
         int y = 90;
         int topBlock = -255;
-        BlockPos tempPos = new BlockPos(origin.withY(y));
+
+        while (y > 40) {
+            BlockPos tempPos = new BlockPos(origin.withY(y));
+            if (Arrays.stream(replacementBlocks).toList().contains(world.getBlockState(tempPos).getBlock())) {
+                topBlock = y;
+                break;
+            }
+            y --;
+        }
+
+        if (y == 40) {
+            return false;
+        }
+
+        origin = origin.withY(y);
+        BlockPos guessPos = null;
+        BlockPos pos1 = null;
+        BlockPos pos2 = null;
+        int distance = 0;
+        float angle_radians = 0;
+
+
+        outerLoop:
+        for (int i = 1; i < 16; i ++) {
+            for (float r = 0; r < Math.PI * 2; r += Math.PI * 1/6) {
+                guessPos = BlockAtOffsetPositionAndAngle(origin, i, r);
+                if (!Arrays.stream(replacementBlocks).toList().contains(world.getBlockState(guessPos).getBlock())) {
+                    distance = i;
+                    angle_radians = r;
+                    pos1 = guessPos;
+                    break outerLoop;
+                }
+            }
+        }
+
+        if (pos1 == null) {
+//            System.out.println("failed placing dam...");
+            return false;
+        }
+
+        float inverse_angle_radians = (int) (Math.PI * 2 -angle_radians);
+
+        for (int i = distance; i < 40; i ++) {
+            guessPos = BlockAtOffsetPositionAndAngle(pos1, i, inverse_angle_radians);
+            if (!Arrays.stream(replacementBlocks).toList().contains(world.getBlockState(guessPos).getBlock())) {
+                distance = i;
+                pos2 = guessPos;
+                break;
+            }
+        }
+
+        if (distance >= 35) {
+            return false;
+        }
+
+        if (distance <= 12) {
+            return false;
+        }
+
+        if (pos2 == null) {
+//            System.out.println("failed placing dam... ");
+            return false;
+        }
+
+        System.out.println("-----------------------------");
+        System.out.println(pos1 + " ; " + world.getBlockState(guessPos).getBlock());
+        System.out.println(pos2 + " ; " + world.getBlockState(guessPos).getBlock());
+
+        BlockState blockState = Blocks.STONE.getDefaultState(); // Change to the block you want to place
+
+        placeLineBetweenPoints(world, pos1, pos2, blockState, topBlock, replacementBlocks);
+        return true;
+    };
+
+    private static boolean placeDamTile(int topBlock, Block[] replacementBlocks, BlockPos position, StructureWorldAccess world) {
+        int y = topBlock;
+        BlockPos tempPos = new BlockPos(position.withY(y));
         BlockState tempBlockState = world.getBlockState(tempPos);
 
         BlockState[] blocks = getDamBlocksInBiomeAndLocation(0);
 
         while (y > -64) {
             if (Arrays.stream(replacementBlocks).toList().contains(world.getBlockState(tempPos).getBlock())) {
-                if (topBlock == -255) {
-                    topBlock = y;
-                }
-
                 blocks = getDamBlocksInBiomeAndLocation(topBlock - y);
                 world.setBlockState(
                         tempPos,
                         blocks[(int) Math.floor(Math.random() * blocks.length)],
-                        0);
-
-            } else if (topBlock != -255) {
+                        3);
+            } else {
                 // place a block on top of the dam
                 if (Math.random() > (0.25 - (topBlock - y) * 0.015)) {
                     blocks = getDamBlocksInBiomeAndLocation(-1);
-                    world.setBlockState(tempPos.withY(topBlock + 1), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
+                    world.setBlockState(tempPos.withY(topBlock + 1), blocks[(int) Math.floor(Math.random() * blocks.length)], 3);
 
                     // place another one on top of that one
                     if (Math.random() > 1.0 - (topBlock - y) * 0.05) {
                         blocks = getDamBlocksInBiomeAndLocation(-2);
-                        world.setBlockState(tempPos.withY(topBlock + 2), blocks[(int) Math.floor(Math.random() * blocks.length)], 0);
+                        world.setBlockState(tempPos.withY(topBlock + 2), blocks[(int) Math.floor(Math.random() * blocks.length)], 3);
                     }
                 }
                 return true;
-            } else if (y < 60) {
-                return false;
             }
-
-            y = y - 1;
+            y -= 1;
             tempPos = tempPos.withY(y);
         }
         return false;
@@ -134,5 +203,32 @@ public class DamFeature extends Feature<DamFeatureConfig> {
             case 4 -> new BlockState[] {oak_wood, oak_wood, oak_log, oak_log, mud, mud};
             default -> new BlockState[] {oak_wood, oak_wood, oak_log, mud, mud};
         };
+    }
+
+    private static BlockPos BlockAtOffsetPositionAndAngle (BlockPos origin, int distance, float angle_radians) {
+        return origin.add(
+            (int) (distance * Math.cos(angle_radians)),
+            0,
+            (int) (distance * Math.sin(angle_radians))
+        );
+    }
+
+    private static void placeLineBetweenPoints(StructureWorldAccess world, BlockPos startPos, BlockPos endPos, BlockState blockState, int topBlock, Block[] replacementBlocks) {
+        int x1 = startPos.getX();
+        int z1 = startPos.getZ();
+        int x2 = endPos.getX();
+        int z2 = endPos.getZ();
+
+        double distance = Math.sqrt((x2 - x1) * (x2 - x1) + (z2 - z1) * (z2 - z1));
+
+        for (int i = 0; i < distance; i++) {
+            double t = i / distance;
+            int x = (int) Math.round(x1 + (x2 - x1) * t);
+            int z = (int) Math.round(z1 + (z2 - z1) * t);
+            BlockPos pos = new BlockPos(x, topBlock, z);
+
+            placeDamTile(topBlock, replacementBlocks, pos, world);
+            placeDamTile(topBlock, replacementBlocks, pos.add(1, 0, 0), world);
+        }
     }
 }
