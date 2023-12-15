@@ -2,16 +2,16 @@
 	"schemaVersion": 1,
 	"id": "temmies-mod",
 	"version": "${version}",
-	"name": "TemmiesMod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Beaver Dams",
+	"description": "A funny mod that adds beaver dams",
 	"authors": [
-		"Me!"
+		"JustTemmie"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/temmies-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
