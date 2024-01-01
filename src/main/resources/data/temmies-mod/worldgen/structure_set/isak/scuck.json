@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "temmies-mod:isak/scuck",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 250,
+    "separation": 150,
+    "salt": 767201259
+  }
+}

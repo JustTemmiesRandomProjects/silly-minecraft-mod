@@ -1,0 +1,33 @@
+{
+  "name": "temmies-mod:lavo",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 70,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:oddbjorn/lavo_common",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 10,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:oddbjorn/lavo_rare_horn",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 14,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:oddbjorn/lavo_rare_book",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

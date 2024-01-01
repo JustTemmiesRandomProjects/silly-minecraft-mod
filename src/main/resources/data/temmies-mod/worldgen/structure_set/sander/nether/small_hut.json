@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "temmies-mod:sander/nether/small_hut",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 30,
+    "separation": 12,
+    "salt": 545501709
+  }
+}

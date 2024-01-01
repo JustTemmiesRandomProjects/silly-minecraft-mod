@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "temmies-mod:oddbjorn/lavo1",
+      "weight": 1
+    },
+    {
+      "structure": "temmies-mod:oddbjorn/lavo2",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 13,
+    "separation": 5,
+    "salt": 55201256
+  }
+}

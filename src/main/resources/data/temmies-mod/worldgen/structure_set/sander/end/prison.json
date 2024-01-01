@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "temmies-mod:sander/end/prison",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 60,
+    "separation": 40,
+    "salt": 255555555
+  }
+}

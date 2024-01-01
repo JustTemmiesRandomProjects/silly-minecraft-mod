@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "temmies-mod:sander/end/tower",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 80,
+    "separation": 50,
+    "salt": 155555555
+  }
+}

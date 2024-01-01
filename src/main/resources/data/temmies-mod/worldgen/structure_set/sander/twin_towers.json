@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "temmies-mod:sander/twin_towers",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 250,
+    "separation": 200,
+    "salt": 552501512
+  }
+}

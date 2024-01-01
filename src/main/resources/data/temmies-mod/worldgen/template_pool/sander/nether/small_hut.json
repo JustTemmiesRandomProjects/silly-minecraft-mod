@@ -1,0 +1,15 @@
+{
+  "name": "temmies-mod:small_hut",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "temmies-mod:sander/nether/small_hut",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "structures": [
+    {
+      "structure": "temmies-mod:oddbjorn/rocks_plains",
+      "weight": 1
+    },
+    {
+      "structure": "temmies-mod:oddbjorn/rocks_savanna",
+      "weight": 1
+    },
+    {
+      "structure": "temmies-mod:oddbjorn/rocks_snowy",
+      "weight": 1
+    },
+    {
+      "structure": "temmies-mod:oddbjorn/rocks_taiga",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 7,
+    "separation": 4,
+    "salt": 55201253
+  }
+}

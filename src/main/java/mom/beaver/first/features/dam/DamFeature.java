@@ -44,13 +44,6 @@ public class DamFeature extends Feature<DamFeatureConfig> {
         DamFeatureConfig config = context.getConfig();
 
         int number = config.number();
-        String lidBlockID = config.lidBlockID().toString();
-
-        // the block to "end the generation" on the y-axis
-        Block lidBlock = Blocks.WATER;
-        if (lidBlockID.equals("minecraft:air")) {
-            lidBlock = Blocks.AIR;
-        }
 
         Block[] replacementBlocks = {
                 Blocks.WATER,
@@ -85,8 +78,9 @@ public class DamFeature extends Feature<DamFeatureConfig> {
 
         outerLoop:
         for (int i = 1; i < 16; i ++) {
-            for (float r = 0; r < Math.PI * 2; r += Math.PI * 1/6) {
+            for (float r = 0; r < Math.PI * 2; r += (float) (Math.PI * 1/6)) {
                 guessPos = BlockAtOffsetPositionAndAngle(origin, i, r);
+                if (world.getBlockState(guessPos).getBlock() == Blocks.ICE) { return false; }
                 if (!Arrays.stream(replacementBlocks).toList().contains(world.getBlockState(guessPos).getBlock())) {
                     distance = i;
                     angle_radians = r;
@@ -94,6 +88,10 @@ public class DamFeature extends Feature<DamFeatureConfig> {
                     break outerLoop;
                 }
             }
+        }
+
+        if (distance > 15) {
+            return false;
         }
 
         if (pos1 == null) {
@@ -116,7 +114,7 @@ public class DamFeature extends Feature<DamFeatureConfig> {
             return false;
         }
 
-        if (distance <= 12) {
+        if (distance <= 8) {
             return false;
         }
 
